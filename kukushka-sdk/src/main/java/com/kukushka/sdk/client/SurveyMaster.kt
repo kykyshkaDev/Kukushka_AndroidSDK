@@ -197,7 +197,7 @@ class SurveyMaster: SurveyClient {
         onSurveyFail = block
     }
 
-    override fun setOnLoadFailListener(block: SDKCallback) {
+    override fun setOnSurveyLoadFailListener(block: SDKCallback) {
         onLoadFail = block
     }
 

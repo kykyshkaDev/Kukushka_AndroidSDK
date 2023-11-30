@@ -24,7 +24,7 @@ internal interface SurveyClient {
 
     fun setOnSurveyFailListener(block: (data: String) -> Unit)
 
-    fun setOnLoadFailListener(block: (data: String) -> Unit)
+    fun setOnSurveyLoadFailListener(block: (data: String) -> Unit)
 
     class SurveyClientException(message: String): Exception(message)
 }
