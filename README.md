@@ -2,6 +2,9 @@
 
 **Kukushka SDK** makes it easy to give players survey tasks followed by a reward. The SDK can be installed and set up in minutes.
 
+**iOS SDK** can be found [here](https://github.com/kykyshkaDev/kukushka_iOSSDK)
+**Unity SDK** can be found [here](https://github.com/kykyshkaDev/Kukushka_UnitySDK)
+
 ## Usage
 
 **Just create SurveyMaster:**
