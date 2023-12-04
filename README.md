@@ -51,14 +51,14 @@ Kukushka SDK has a lot of different Callbacks for your game. Use this callbacks 
 ```swift
 with(surveyMaster) {
     // Add Survey Callbacks
-    setOnSurveyFailListener { Log.d(TAG, "Последний опрос не пройден") }
-    setOnSurveyStartListener { Log.d(TAG, "Прохождение опроса началось") }
-    setOnSurveyLoadFailListener { Log.d(TAG, "Ошибка загрузки") }
-    setOnSurveySuccessListener { Log.d(TAG, "Последний опрос пройден успешно") }
+    setOnSurveyFailListener { Log.d(TAG, "Survey not complete") }
+    setOnSurveyStartListener { Log.d(TAG, "Survey started") }
+    setOnSurveyLoadFailListener { Log.d(TAG, "Loading error") }
+    setOnSurveySuccessListener { Log.d(TAG, "Survey completed") }
 
     // Add Preloading Callbacks
-    setOnSurveyAvailableListener { Log.d(TAG, "Подходящий опрос найден") }
-    setOnSurveyUnavailableListener { Log.d(TAG, "Подходящий опрос не найден") }
+    setOnSurveyAvailableListener { Log.d(TAG, "An available survey found") }
+    setOnSurveyUnavailableListener { Log.d(TAG, "No available survey found") }
 }
 ```
 Also callbacks events can be received as a flow:
