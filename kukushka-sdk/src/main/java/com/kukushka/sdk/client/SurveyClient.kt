@@ -14,17 +14,17 @@ internal interface SurveyClient {
 
     fun dispose()
 
-    fun setOnSurveyAvailableListener(block: (data: String) -> Unit)
+    fun setOnSurveyAvailableListener(block: () -> Unit)
 
-    fun setOnSurveyUnavailableListener(block: (data: String) -> Unit)
+    fun setOnSurveyUnavailableListener(block: () -> Unit)
 
-    fun setOnSurveyStartListener(block: (data: String) -> Unit)
+    fun setOnSurveyStartListener(block: () -> Unit)
 
-    fun setOnSurveySuccessListener(block: (data: String) -> Unit)
+    fun setOnSurveySuccessListener(block: (n: Int) -> Unit)
 
-    fun setOnSurveyFailListener(block: (data: String) -> Unit)
+    fun setOnSurveyFailListener(block: () -> Unit)
 
-    fun setOnSurveyLoadFailListener(block: (data: String) -> Unit)
+    fun setOnSurveyLoadFailListener(block: () -> Unit)
 
     class SurveyClientException(message: String): Exception(message)
 }
