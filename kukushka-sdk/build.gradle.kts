@@ -49,7 +49,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.kukushka.sdk"
                 artifactId = "android-sdk"
-                version = "1.0.0"
+                version = "1.0.1"
             }
         }
     }
