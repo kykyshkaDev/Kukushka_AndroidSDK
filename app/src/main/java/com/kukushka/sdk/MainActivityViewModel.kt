@@ -14,7 +14,7 @@ class MainActivityViewModel: ViewModel() {
     var surveyMaster: SurveyMaster = SurveyMaster()
         .apply {
             setUserId("userid")
-            init("vIrUgLgPf6rDiAJ0bBpMBwOxAf7W24cXRKyEHSTEXMbYEUZJ8FSRRUbYsiuiubG5")
+            init("gamedemo")
         }
         private set
 

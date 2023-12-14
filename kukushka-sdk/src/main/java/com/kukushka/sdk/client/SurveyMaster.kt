@@ -15,7 +15,6 @@ import com.kukushka.sdk.overlay.SurveyWebViewCallback
 import com.kukushka.sdk.parser.parseCustomDataToSurveyCallback
 import com.kukushka.sdk.parser.parseToSurveyCallback
 import com.kukushka.sdk.util.Environment
-import com.kukushka.sdk.util.SDKCallback
 import com.kukushka.sdk.util.SDKString
 import com.kukushka.sdk.util.addEventListenerScript
 import com.kukushka.sdk.util.isInvalid
@@ -35,7 +34,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
-
 
 class SurveyMaster: SurveyClient {
 
@@ -63,19 +61,19 @@ class SurveyMaster: SurveyClient {
     private var isHasShowSurveyCalled = false
     private var isShowSurveyCalled = false
 
-    private var onLinkClicked: SDKCallback = { data ->
+    private var onLinkClicked: (data: String) -> Unit = { data ->
         val link = try { JSONObject(data).getString("link") } catch (e: JSONException) { "about:blank" }
         val uri = Uri.parse(link)
         val browserIntent = Intent(Intent.ACTION_VIEW, uri)
         requireActivity().startActivity(browserIntent)
     }
 
-    private var onSurveyAvailable: SDKCallback = {}
-    private var onSurveyUnavailable: SDKCallback = {}
-    private var onSurveyStart: SDKCallback = {}
-    private var onSurveySuccess: SDKCallback = {}
-    private var onSurveyFail: SDKCallback = {}
-    private var onLoadFail: SDKCallback = {}
+    private var onSurveyAvailable: () -> Unit = {}
+    private var onSurveyUnavailable: () -> Unit = {}
+    private var onSurveyStart: () -> Unit = {}
+    private var onSurveySuccess: (n: Int) -> Unit = {}
+    private var onSurveyFail: () -> Unit = {}
+    private var onLoadFail: () -> Unit = {}
 
     /**
      * Sets a observers for events.
@@ -177,27 +175,27 @@ class SurveyMaster: SurveyClient {
         overlayController.detachWebView(requireActivity())
     }
 
-    override fun setOnSurveyAvailableListener(block: SDKCallback) {
+    override fun setOnSurveyAvailableListener(block: () -> Unit) {
         onSurveyAvailable = block
     }
 
-    override fun setOnSurveyUnavailableListener(block: SDKCallback) {
+    override fun setOnSurveyUnavailableListener(block: () -> Unit) {
         onSurveyUnavailable = block
     }
 
-    override fun setOnSurveyStartListener(block: SDKCallback) {
+    override fun setOnSurveyStartListener(block: () -> Unit) {
         onSurveyStart = block
     }
 
-    override fun setOnSurveySuccessListener(block: SDKCallback) {
+    override fun setOnSurveySuccessListener(block: (n: Int) -> Unit) {
         onSurveySuccess = block
     }
 
-    override fun setOnSurveyFailListener(block: SDKCallback) {
+    override fun setOnSurveyFailListener(block: () -> Unit) {
         onSurveyFail = block
     }
 
-    override fun setOnSurveyLoadFailListener(block: SDKCallback) {
+    override fun setOnSurveyLoadFailListener(block: () -> Unit) {
         onLoadFail = block
     }
 
@@ -206,7 +204,7 @@ class SurveyMaster: SurveyClient {
         scope.cancel()
     }
 
-    fun setOnLinkClickedListener(block: SDKCallback) {
+    fun setOnLinkClickedListener(block: (data: String) -> Unit) {
         onLinkClicked = block
     }
 
@@ -342,17 +340,20 @@ class SurveyMaster: SurveyClient {
 
         when(surveyCallback.event) {
 
-            SurveyEvent.SurveyAvailable -> { onSurveyAvailable.invoke(data) }
+            SurveyEvent.SurveyAvailable -> { onSurveyAvailable.invoke() }
 
-            SurveyEvent.LoadFail -> { onLoadFail.invoke(data) }
+            SurveyEvent.LoadFail -> { onLoadFail.invoke() }
 
-            SurveyEvent.SurveyFail -> { onSurveyFail.invoke(data) }
+            SurveyEvent.SurveyFail -> { onSurveyFail.invoke() }
 
-            SurveyEvent.SurveyStart -> { onSurveyStart.invoke(data) }
+            SurveyEvent.SurveyStart -> { onSurveyStart.invoke() }
 
-            SurveyEvent.SurveySuccess -> { onSurveySuccess.invoke(data) }
+            SurveyEvent.SurveySuccess -> {
+                val n = try { JSONObject(data).getJSONObject("body").getInt("nq") } catch (e: Exception) { null } ?: -1
+                onSurveySuccess.invoke(n)
+            }
 
-            SurveyEvent.SurveyUnavailable -> { onSurveyUnavailable.invoke(data) }
+            SurveyEvent.SurveyUnavailable -> { onSurveyUnavailable.invoke() }
 
             SurveyEvent.PageReady -> { pageReadyFlow.update { true } }
 

@@ -16,6 +16,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,8 +36,24 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            var nq by remember { mutableStateOf(-1) }
+
+            LaunchedEffect(key1 = Unit) {
+                viewModel.surveyMaster.run {
+                    attachToActivity(this@MainActivity)
+                    setOnSurveySuccessListener { n ->
+                        nq = n
+                        dismissSurvey()
+                    }
+                    setOnSurveyFailListener {
+                        dismissSurvey()
+                    }
+                    setOrientationControlStrategy(OrientationControlStrategy.Auto)
+                }
+            }
             AppTheme {
                 ApplicationContent(
+                    nq = nq,
                     event = viewModel.event,
                     onHasSurvey = { viewModel.surveyMaster.hasSurvey() },
                     onShowSurvey = { viewModel.surveyMaster.showSurvey() },
@@ -53,16 +70,6 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
-        viewModel.surveyMaster.run {
-            attachToActivity(this@MainActivity)
-            setOnSurveySuccessListener {
-                dismissSurvey()
-            }
-            setOnSurveyFailListener {
-                dismissSurvey()
-            }
-            setOrientationControlStrategy(OrientationControlStrategy.Auto)
-        }
     }
 
     override fun onDestroy() {
@@ -74,6 +81,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ApplicationContent(
+    nq: Int = -1,
     event: SurveyEvent = SurveyEvent.None,
     onHasSurvey: () -> Unit = {},
     onShowSurvey: () -> Unit = {},
@@ -114,6 +122,9 @@ fun ApplicationContent(
             Text(
                 text = event.tag
             )
+            Text(
+                text = "Nq: $nq"
+            )
             Button(onClick = onHasSurvey) {
                 Text("hasSurvey()")
             }
@@ -126,7 +137,7 @@ fun ApplicationContent(
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun ApplicationContentPreview() {
     AppTheme {
         ApplicationContent()
     }
